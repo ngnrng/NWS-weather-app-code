@@ -29,8 +29,9 @@ type WeatherData struct {
 	} `json:"properties"`
 }
 
-func main() {
-	resp, err := http.Get("https://api.weather.gov/points/34.0522,-118.2437")
+func GetWeatherData(url string) (WeatherData, error) {
+
+	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatalf("Failed to get forecast: %v", err)
 	}
@@ -70,12 +71,31 @@ func main() {
 	if len(weatherData.Properties.Periods) == 0 {
 		log.Fatal("No weather data available")
 	}
+	return weatherData, nil
 
-	humidity := weatherData.Properties.Periods[0].RelativeHumidity.Value
-	temp := weatherData.Properties.Periods[0].Temperature
-	dewpoint := weatherData.Properties.Periods[0].Dewpoint.Value
+}
 
-	fmt.Printf("The current humidity for the Los Angeles area is %d%%\n", humidity)
-	fmt.Printf("The current temperature for the Los Angeles area is %d F\n", temp)
-	fmt.Printf("The current dew point for the Los Angeles area is %.2f\n", dewpoint)
+func main() {
+	urls := make(map[string]string)
+
+	urls["Los Angeles"] = "https://api.weather.gov/points/34.0522,-118.2437"
+	urls["Atlanta"] = "https://api.weather.gov/points/33.6362,-84.4294"
+	urls["New York"] = "https://api.weather.gov/points/40.7833,-73.9666"
+	urls["Chicago"] = "https://api.weather.gov/points/41.8376,-87.6818"
+
+	for city, url := range urls {
+		weatherData, err := GetWeatherData(url)
+		if err != nil {
+			log.Printf("Failed to get weather data for %s: %v", city, err)
+			continue
+		}
+
+		humidity := weatherData.Properties.Periods[0].RelativeHumidity.Value
+		temp := weatherData.Properties.Periods[0].Temperature
+		dewpoint := weatherData.Properties.Periods[0].Dewpoint.Value
+
+		fmt.Printf("The current humidity for the area of %s is %d%%\n", city, humidity)
+		fmt.Printf("The current temperature for the area of %s is %d F\n", city, temp)
+		fmt.Printf("The current dew point for the area of %s is %.2f\n", city, dewpoint)
+	}
 }

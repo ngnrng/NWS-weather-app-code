@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: forecast-pod
+spec:
+  containers:
+  - name: forecast-container
+    image: ubuntu:latest
+    env:
+    - name: FORECAST_ENV_VAR
+      valueFrom:
+        configMapKeyRef:
+          name: forecast-config
+          key: my-key    

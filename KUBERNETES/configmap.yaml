@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forecast-config
+data:
+  my-key: |
+    #!/bin/bash
+    # Add any other necessary script content here
+    # Example:
+    # echo "Hello from my bash script!"
+    ../forecast.sh # path to bash script

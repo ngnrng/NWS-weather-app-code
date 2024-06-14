@@ -1,6 +1,6 @@
 # Weather Forecast CLI
 
-This is a simple command-line interface (CLI) application written in Go that fetches and prints the current weather data for a list of cities.
+This is a simple application written in Go that fetches and prints the current weather data for a list of cities.
 
 ## How it works
 

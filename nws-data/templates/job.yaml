@@ -1,5 +1,6 @@
 apiVersion: batch/v1
 kind: Job
+namespace: nws-data
 metadata:
   name: forecast-job
 spec:

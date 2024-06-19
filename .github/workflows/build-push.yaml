@@ -27,5 +27,5 @@ jobs:
         run: |
           SHA="${{ github.sha }}"
           echo "version=${SHA}" >> $GITHUB_ENV
-          docker build ./ -f Dockerfile -t nws-app:$SHA
-          docker push nws-app:$SHA
+          docker build ./ -f Dockerfile -t ${{ secrets.DOCKER_USER }}/nws-app:$SHA
+          docker push ${{ secrets.DOCKER_USER }}/nws-app:$SHA

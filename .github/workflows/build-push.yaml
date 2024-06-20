@@ -55,4 +55,16 @@ jobs:
           echo ${{ env.sha_short }}
           echo "Modifying $file"
           sed -i "s|image: ${{ secrets.DOCKER_USER }}/nws-app:.*|image: ${{ secrets.DOCKER_USER }}/nws-app:${{ env.sha_short }}|g" cronjob.yaml
+
+      - name: Commit and push changes
+        run: |
+          owner="ngnrng"
+          branch=${{ github.event.inputs.branch }}
+          git config --global user.email ${{ github.event.inputs.email }}
+          git config --global user.name ${{ github.event.inputs.name }}
+          git checkout ${{ github.event.inputs.branch }}
+          echo ${{ env.sha_short }}
+          git add .
+          git commit -m "image ${{ env.sha_short }}""
+          git push origin ${{ github.event.inputs.branch}}
        

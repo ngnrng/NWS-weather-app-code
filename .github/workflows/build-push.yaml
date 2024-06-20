@@ -43,13 +43,12 @@ jobs:
         with:
           repository: 'ngnrng/weather-app'
           token: ${{ secrets.GIT_TOKEN }}
-          ref: 'refs/heads/dom'
-          fetch-depth: 0
+          
       - name: Update yaml files
         run: |
           set -x
           owner="ngnrng"
-          branch="dom"
+          branch="main"
           git config --global user.email ${{ secrets.GIT_EMAIL }}
           git config --global user.name "domger-ops"
           git checkout $branch

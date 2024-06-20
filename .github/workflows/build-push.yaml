@@ -44,7 +44,7 @@ jobs:
           repository: 'ngnrng/weather-app'
           token: ${{ secrets.GIT_TOKEN }}
           ref: 'refs/heads/dom'
-    fetch-depth: 0
+          fetch-depth: 0
       - name: Update yaml files
         run: |
           set -x

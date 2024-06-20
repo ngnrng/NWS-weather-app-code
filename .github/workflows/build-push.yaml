@@ -30,18 +30,6 @@ jobs:
           docker build ./ -f Dockerfile -t ${{ secrets.DOCKER_USER }}/nws-app:$SHA
           docker push ${{ secrets.DOCKER_USER }}/nws-app:$SHA
       
-      # - name: Update yaml files
-      #   run: |
-      #     set -x
-      #     owner="ngnrng"
-      #     branch="dom"
-      #     git config --global user.email ${{ secrets.GITHUB_EMAIL }}
-      #     git config --global user.name "KevOps-atl"
-      #     git checkout $branch
-      #     echo ${{ env.sha_short }}
-      #     echo "Modifying $file"
-      #     sed -i "s|image: $owner/nws-app:.*|image: $owner/nws-app:${{ env.sha_short }}|g" k8s/deployment.yaml
-  
   modify-manifest:
     needs: build-and-push
     runs-on: ubuntu-22.04
@@ -50,4 +38,16 @@ jobs:
         name: update manifest repo
         with:
           repository: 'ngnrng/weather-app'
-          
+          token: ${{ secrets.GIT_TOKEN }}
+      - name: Update yaml files
+        run: |
+          set -x
+          owner="ngnrng"
+          branch="dom"
+          git config --global user.email ${{ secrets.GITHUB_EMAIL }}
+          git config --global user.name "domger-ops"
+          git checkout $branch
+          echo ${{ env.sha_short }}
+          echo "Modifying $file"
+          sed -i "s|image: ${{ secrets.DOCKER_USER }}/nws-app:.*|image: ${{ secrets.DOCKER_USER }}/nws-app:${{ env.sha_short }}|g" cronjob.yaml
+       

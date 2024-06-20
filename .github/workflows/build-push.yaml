@@ -65,6 +65,6 @@ jobs:
           git checkout ${{ github.event.inputs.branch }}
           echo ${{ env.sha_short }}
           git add .
-          git commit -m "image ${{ env.sha_short }}""
+          git commit -m "image ${{ env.sha_short }}"
           git push origin ${{ github.event.inputs.branch}}
        

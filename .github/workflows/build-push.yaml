@@ -67,4 +67,3 @@ jobs:
           git add .
           git commit -m "image ${{ env.sha_short }}"
           git push origin ${{ github.event.inputs.branch}}
-       

@@ -48,7 +48,7 @@ jobs:
           set -x
           owner="ngnrng"
           branch="dom"
-          git config --global user.email ${{ secrets.GITHUB_EMAIL }}
+          git config --global user.email ${{ secrets.GIT_EMAIL }}
           git config --global user.name "domger-ops"
           git checkout $branch
           echo ${{ env.sha_short }}

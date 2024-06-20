@@ -60,11 +60,11 @@ jobs:
       - name: Commit and push changes
         run: |
           owner="ngnrng"
-          branch=${{ github.event.inputs.branch }}
-          git config --global user.email ${{ github.event.inputs.email }}
-          git config --global user.name ${{ github.event.inputs.name }}
-          git checkout ${{ github.event.inputs.branch }}
+          branch=${GITHUB_REF#refs/heads/}
+          git config --global user.email ${{ secrets.GIT_EMAIL }}
+          git config --global user.name "domger-ops"
+          git checkout $branch
           echo ${{ env.sha_short }}
           git add .
           git commit -m "image ${{ env.sha_short }}"
-          git push origin ${{ github.event.inputs.branch}}
+          git push origin ${GITHUB_REF#refs/heads/}

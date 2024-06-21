@@ -44,6 +44,8 @@ jobs:
           repository: 'ngnrng/weather-app'
           token: ${{ secrets.GIT_TOKEN }}
 
+      - name: Set SHA Short
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Update yaml files
         run: |

@@ -9,9 +9,6 @@ jobs:
   build-and-push:
     runs-on: ubuntu-22.04
 
-    outputs:
-      version: ${{ steps.set-version.outputs.version }}
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3

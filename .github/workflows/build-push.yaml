@@ -28,8 +28,8 @@ jobs:
         run: |
           SHA=${{ env.sha_short }}
           echo "version=${SHA}" >> $GITHUB_ENV
-          docker build ./ -f Dockerfile -t ${{ secrets.DOCKER_USER }}/nws-app:$SHA
-          docker push ${{ secrets.DOCKER_USER }}/nws-app:$SHA
+          docker build ./ -f Dockerfile -t ${{ secrets.DOCKER_USER }}/nws-forecast-data:$SHA
+          docker push ${{ secrets.DOCKER_USER }}/nws-forecast-data:$SHA
       
   modify-manifest:
     needs: build-and-push
@@ -71,4 +71,3 @@ jobs:
       #     git add .
       #     git commit -m "image ${{ env.sha_short }}"
       #     git push origin main
-      

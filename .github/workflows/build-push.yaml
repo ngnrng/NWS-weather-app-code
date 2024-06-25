@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@v3
         name: update manifest repo
         with:
-          repository: 'ngnrng/weather-app'
+          repository: 'ngnrng/NWS-weather-app-manifest'
           token: ${{ secrets.GIT_TOKEN }}
 
       - name: Set SHA Short

@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: forecast-job
+spec:
+  parallelism: 1    
+  completions: 1    
+  template:         
+    metadata:
+      name: forecast-job
+    spec:
+      volumes:
+      - name: forecast-scripts-volume
+        configMap:
+          name: forecast-config
+      containers:
+      - name: forecast-job
+        image: ubuntu:latest
+        volumeMounts:
+          - mountPath: /forecast-scripts
+            name: forecast-scripts-volume
+        env:
+          - name: FORECAST_ENV_VAR
+            valueFrom:
+              configMapKeyRef:
+                name: forecast-config
+                key: forecast.sh  
+        command:
+        - /bin/sh
+        - -c
+        - |
+          apt-get update &&
+          apt-get install -y curl jq &&
+          ls -l /forecast-scripts &&
+          /bin/sh /forecast-scripts/forecast.sh
+      restartPolicy: Never

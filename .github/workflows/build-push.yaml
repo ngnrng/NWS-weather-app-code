@@ -50,7 +50,7 @@ jobs:
           owner="ngnrng"
           branch="main"
           git config --global user.email ${{ secrets.GIT_EMAIL }}
-          git config --global user.name "domger-ops"
+          git config --global user.name "kevops-atl"
           git checkout $branch
           echo ${{ env.sha_short }}
           echo "Modifying $file"
@@ -61,7 +61,7 @@ jobs:
           owner="ngnrng"
           branch="main"
           git config --global user.email ${{ secrets.GIT_EMAIL }}
-          git config --global user.name "domger-ops"
+          git config --global user.name "kevops-atl"
           git checkout $branch
           echo ${{ env.sha_short }}
           git add .

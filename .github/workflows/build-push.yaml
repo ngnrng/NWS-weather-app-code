@@ -53,8 +53,12 @@ jobs:
           git config --global user.name "kevops-atl"
           git checkout $branch
           echo ${{ env.sha_short }}
+          cat cronjob.yaml
           echo "Modifying $file"
           sed -i "s|image: ${{ secrets.DOCKER_USER }}/nws-app:.*|image: ${{ secrets.DOCKER_USER }}/nws-app:${{ env.sha_short }}|g" cronjob.yaml
+          git add .
+          git commit -m "image ${{ env.sha_short }}"
+          git push
 
       - name: Commit and push changes
         run: |

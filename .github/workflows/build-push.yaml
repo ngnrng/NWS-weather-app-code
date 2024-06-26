@@ -3,13 +3,12 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - dom
+      - main
 
 jobs:
   build-and-push:
     runs-on: ubuntu-22.04
-    outputs:
-      sha_short: ${{ steps.set_env.outputs.sha_short }} # Set the output to be used by another job
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -39,7 +38,7 @@ jobs:
       - uses: actions/checkout@v3
         name: update manifest repo
         with:
-          repository: 'ngnrng/weather-app'
+          repository: 'ngnrng/NWS-weather-app-manifest'
           token: ${{ secrets.GIT_TOKEN }}
 
       - name: Update yaml files
@@ -48,20 +47,24 @@ jobs:
           owner="ngnrng"
           branch="main"
           git config --global user.email ${{ secrets.GIT_EMAIL }}
-          git config --global user.name "domger-ops"
+          git config --global user.name "kevops-atl"
           git checkout $branch
           echo ${{ env.sha_short }}
+          cat cronjob.yaml
           echo "Modifying $file"
-          sed -i "s|image: ${{ secrets.DOCKER_USER }}/nws-app:.*|image: ${{ secrets.DOCKER_USER }}/nws-app:${{ env.sha_short }}|g" cronjob.yaml
-
-      - name: Commit and push changes
-        run: |
-          owner="ngnrng"
-          branch="main"
-          git config --global user.email ${{ secrets.GIT_EMAIL }}
-          git config --global user.name "domger-ops"
-          git checkout $branch
-          echo ${{ env.sha_short }}
+          sed -i "s|image: ${{ secrets.DOCKER_USER }}/nws-forecast-data:.*|image: ${{ secrets.DOCKER_USER }}/nws-forecast-data:${{ env.sha_short }}|g" cronjob.yaml
           git add .
           git commit -m "image ${{ env.sha_short }}"
-          git push origin main
+          git push
+
+      # - name: Commit and push changes
+      #   run: |
+      #     owner="ngnrng"
+      #     branch="main"
+      #     git config --global user.email ${{ secrets.GIT_EMAIL }}
+      #     git config --global user.name "kevops-atl"
+      #     git checkout $branch
+      #     echo ${{ env.sha_short }}
+      #     git add .
+      #     git commit -m "image ${{ env.sha_short }}"
+      #     git push origin main

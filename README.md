@@ -1,6 +1,7 @@
 # Weather Forecast CLI
 
 This is a simple command-line interface (CLI) application written in Go that fetches and prints the current weather data for a list of cities.
+It demonstrates fetching and processing JSON data from an API, error handling, and working with maps and loops in Go.
 
 ## How it works
 
@@ -10,9 +11,13 @@ The application uses the National Weather Service API to fetch weather data for 
 
 The code is organized into two main parts:
 
-1. [`GetWeatherData(url string) (WeatherData, error)`](command:_github.copilot.openSymbolFromReferences?%5B%7B%22%24mid%22%3A1%2C%22path%22%3A%22%2FUsers%2Ftrapbook%2Factions-cicd%2Fforecast.go%22%2C%22scheme%22%3A%22file%22%7D%2C%7B%22line%22%3A31%2C%22character%22%3A5%7D%5D "forecast.go"): This function takes a URL as input, sends a GET request to the National Weather Service API, and returns the weather data for the geographical point represented by the URL.
+1. [`GetWeatherData(url string) (WeatherData, error)`]: This function takes a URL as input, sends a GET request to the National Weather Service API, and returns the weather data for the geographical point represented by the URL.
 
-2. [`main()`](command:_github.copilot.openSymbolFromReferences?%5B%7B%22%24mid%22%3A1%2C%22path%22%3A%22%2FUsers%2Ftrapbook%2Factions-cicd%2Fforecast.go%22%2C%22scheme%22%3A%22file%22%7D%2C%7B%22line%22%3A77%2C%22character%22%3A5%7D%5D "forecast.go"): This function creates a map of city names to URLs, then iterates over the map. For each city, it calls [`GetWeatherData(url)`](command:_github.copilot.openSymbolFromReferences?%5B%7B%22%24mid%22%3A1%2C%22path%22%3A%22%2FUsers%2Ftrapbook%2Factions-cicd%2Fforecast.go%22%2C%22scheme%22%3A%22file%22%7D%2C%7B%22line%22%3A31%2C%22character%22%3A5%7D%5D "forecast.go") to fetch the weather data, then prints the humidity, temperature, and dew point.
+2. [`FetchURL(url)`]: Takes a URL string as input, performs an HTTP GET request, and returns the response body as a byte slice. 
+
+3. [`UnmarshalJSON[T any](data []byte) (T, error)`]: A generic function that takes a byte slice and unmarshals it into a specified type T. It's used to parse the JSON response into the defined structs
+
+2. [`main()`]: Initializes a map with city names as keys and their corresponding API endpoint URLs as values. It iterates over this map, calls GetWeatherData for each city, and prints the humidity, temperature, and dewpoint for the first period of available data.
 
 ## Usage
 
@@ -41,4 +46,4 @@ The application includes basic error handling. If it fails to fetch the weather 
 
 ## Future Improvements
 
-Future improvements could include unit and BDD tests, support for more cities, and additional weather data such as wind speed and precipitation.
+Future improvements could include unit tests, support for more cities, and additional weather data such as wind speed and precipitation.

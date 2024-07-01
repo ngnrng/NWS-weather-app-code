@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
+	"os"
 )
 
 // We create a struct to hold the STRUCTure of the data. It includes a nested struct for the properties.
@@ -15,32 +16,15 @@ type GetForecastUrl struct {
 }
 
 type WeatherData struct {
-	Properties struct {
-		Periods []struct {
-			RelativeHumidity struct {
-				Value int `json:"value"`
-			} `json:"relativeHumidity"`
-			Temperature int `json:"temperature"`
-			Dewpoint    struct {
-				Value float64 `json:"value"`
-			} `json:"dewpoint"`
-		} `json:"periods"`
-	} `json:"properties"`
-}
-
-func FetchURL(url string) ([]byte, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get URL: %v", err)
+	Main struct {
+		Temp     float64 `json:"temp"`
+		Low      float64 `json:"temp_min"`
+		High     float64 `json:"temp_max"`
+		Humidity float64 `json:"humidity"`
 	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
+	Wind struct {
+		Speed float64 `json:"speed"`
 	}
-
-	return body, nil
 }
 
 func UnmarshalJSON[T any](data []byte) (T, error) {
@@ -53,21 +37,13 @@ func UnmarshalJSON[T any](data []byte) (T, error) {
 }
 
 func GetWeatherData(url string) (WeatherData, error) {
-	body, err := FetchURL(url)
+	resp, err := http.Get(url)
 	if err != nil {
 		return WeatherData{}, err
 	}
+	defer resp.Body.Close()
 
-	getForecastUrl, err := UnmarshalJSON[GetForecastUrl](body)
-	if err != nil {
-		return WeatherData{}, err
-	}
-
-	if getForecastUrl.Properties.Forecast == "" {
-		return WeatherData{}, fmt.Errorf("forecast URL is empty")
-	}
-
-	body, err = FetchURL(getForecastUrl.Properties.Forecast)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return WeatherData{}, err
 	}
@@ -77,20 +53,17 @@ func GetWeatherData(url string) (WeatherData, error) {
 		return WeatherData{}, err
 	}
 
-	if len(weatherData.Properties.Periods) == 0 {
-		return WeatherData{}, fmt.Errorf("no weather data available")
-	}
-
 	return weatherData, nil
 }
 
 func main() {
 	urls := make(map[string]string)
+	OW_KEY := os.Getenv("OW_KEY")
 
-	urls["Los Angeles"] = "https://api.weather.gov/points/34.0522,-118.2437"
-	urls["Atlanta"] = "https://api.weather.gov/points/33.6362,-84.4294"
-	urls["New York"] = "https://api.weather.gov/points/40.7833,-73.9666"
-	urls["Chicago"] = "https://api.weather.gov/points/41.8376,-87.6818"
+	urls["Los Angeles"] = "https://api.openweathermap.org/data/2.5/weather?lat=34.0522&lon=-118.2437&units=imperial&appid=" + OW_KEY
+	urls["Atlanta"] = "https://api.openweathermap.org/data/2.5/weather?lat=33.6362&lon=-84.4294&units=imperial&appid=" + OW_KEY
+	urls["New York"] = "https://api.openweathermap.org/data/2.5/weather?lat=40.7833&lon=-73.9666&units=imperial&appid=" + OW_KEY
+	urls["Chicago"] = "https://api.openweathermap.org/data/2.5/weather?lat=41.8376&lon=-87.6818&units=imperial&appid=" + OW_KEY
 
 	for city, url := range urls {
 		WeatherData, err := GetWeatherData(url)
@@ -99,12 +72,14 @@ func main() {
 			continue
 		}
 
-		humidity := WeatherData.Properties.Periods[0].RelativeHumidity.Value
-		temp := WeatherData.Properties.Periods[0].Temperature
-		dewpoint := WeatherData.Properties.Periods[0].Dewpoint.Value
+		humidity := WeatherData.Main.Humidity
+		temp := WeatherData.Main.Temp
+		low := WeatherData.Main.Low
+		wind_speed := WeatherData.Wind.Speed
 
-		fmt.Printf("The current humidity for the area of %s is %d%%\n", city, humidity)
-		fmt.Printf("The current temperature for the area of %s is %d F\n", city, temp)
-		fmt.Printf("The current dew point for the area of %s is %.2f\n", city, dewpoint)
+		fmt.Printf("The current humidity for the area of %s is %.2f%%\n", city, humidity)
+		fmt.Printf("The current temperature for the area of %s is %d degrees\n", city, int(temp))
+		fmt.Printf("The current low temperature for the area of %s is %d degrees\n", city, int(low))
+		fmt.Printf("The current wind speed for the area of %s is %.2f mph\n", city, wind_speed)
 	}
 }

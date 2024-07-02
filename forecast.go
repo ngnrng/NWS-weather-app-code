@@ -118,10 +118,9 @@ func main() {
 	OW_KEY := os.Getenv("OW_KEY")
 	if OW_KEY == "" {
 		fmt.Println("OW_KEY environment variable is not set")
-	} else {
-		fmt.Printf("OW_KEY is set: %s\n", OW_KEY) // Mask this or log only if necessary as it's sensitive
-	}
+		os.Exit(1)
 
+	}
 	urls["Los Angeles"] = "https://api.openweathermap.org/data/2.5/weather?lat=34.0522&lon=-118.2437&units=imperial&appid=" + OW_KEY
 	urls["Atlanta"] = "https://api.openweathermap.org/data/2.5/weather?lat=33.6362&lon=-84.4294&units=imperial&appid=" + OW_KEY
 	urls["New York"] = "https://api.openweathermap.org/data/2.5/weather?lat=40.7833&lon=-73.9666&units=imperial&appid=" + OW_KEY

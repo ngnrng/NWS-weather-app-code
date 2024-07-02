@@ -47,20 +47,25 @@ func UnmarshalJSON[T any](data []byte) (T, error) {
 }
 
 func GetWeatherData(url string) (WeatherData, error) {
+	fmt.Printf("Requesting URL: %s\n", url) // Log the request URL
 	resp, err := http.Get(url)
 	if err != nil {
-		return WeatherData{}, err
+		return WeatherData{}, fmt.Errorf("error making HTTP request: %v", err)
 	}
 	defer resp.Body.Close()
 
+	fmt.Printf("Response Status: %s\n", resp.Status) // Log the response status
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return WeatherData{}, err
+		return WeatherData{}, fmt.Errorf("error reading response body: %v", err)
 	}
+
+	fmt.Printf("Response Body: %s\n", string(body)) // Log the response body for debugging
 
 	weatherData, err := UnmarshalJSON[WeatherData](body)
 	if err != nil {
-		return WeatherData{}, err
+		return WeatherData{}, fmt.Errorf("error unmarshalling JSON: %v", err)
 	}
 
 	return weatherData, nil
@@ -111,6 +116,11 @@ func sendMetrics(citiesMetrics []CityMetrics) error {
 func main() {
 	urls := make(map[string]string)
 	OW_KEY := os.Getenv("OW_KEY")
+	if OW_KEY == "" {
+		fmt.Println("OW_KEY environment variable is not set")
+	} else {
+		fmt.Printf("OW_KEY is set: %s\n", OW_KEY) // Mask this or log only if necessary as it's sensitive
+	}
 
 	urls["Los Angeles"] = "https://api.openweathermap.org/data/2.5/weather?lat=34.0522&lon=-118.2437&units=imperial&appid=" + OW_KEY
 	urls["Atlanta"] = "https://api.openweathermap.org/data/2.5/weather?lat=33.6362&lon=-84.4294&units=imperial&appid=" + OW_KEY

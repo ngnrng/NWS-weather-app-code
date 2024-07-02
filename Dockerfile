@@ -1,5 +1,9 @@
 FROM golang:1.18-alpine as builder
 
+ARG OW_KEY
+
+ENV OW_KEY=${OW_KEY}
+
 WORKDIR /app
 
 COPY . /app

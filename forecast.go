@@ -82,7 +82,7 @@ func sendMetrics(citiesMetrics []CityMetrics) error {
 	fmt.Println("Metrics being sent:\n", data)
 
 	// Endpoint where the metrics will be sent
-	url := "http://your.monitoring.tool/metrics"
+	url := "http://pushgateway.monitoring.svc.cluster.local:9091/metrics/job/weather_metrics"
 
 	// Create a new POST request with the formatted data
 	req, err := http.NewRequest("POST", url, bytes.NewBufferString(data))
